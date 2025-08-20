@@ -1,47 +1,54 @@
-# Job Board with Voice Application
+# Internal Career Mobility Platform
 
-A modern job board application featuring AI-powered voice interviews using Elevenlabs conversational AI and real-time form updates via MCP (Model Context Protocol).
+An AI-powered internal job mobility platform that helps employees explore growth opportunities within the organization. Features supportive voice assistance through Elevenlabs AI to reduce application anxiety and encourage career development.
+
+## Overview
+
+This platform transforms the internal job application process by providing:
+- A professional portal for browsing internal opportunities
+- AI voice assistant that helps employees articulate their skills and experience
+- Real-time form updates as the AI collects information
+- Supportive, encouraging interaction to reduce transition anxiety
 
 ## Features
 
-- 🎯 **Job Listings**: Browse available positions with detailed descriptions
-- 🎤 **Voice Applications**: Apply for jobs using natural voice conversation
-- 🔄 **Real-time Updates**: Watch your application form fill automatically as you speak
-- 🤖 **AI Interview Assistant**: Conversational AI guides you through the application process
-- 📝 **MCP Integration**: Seamless tool execution for form field updates
-- 🚀 **WebSocket Communication**: Instant updates between voice agent and web form
+- 🏢 **Internal Job Board**: Browse growth opportunities across departments
+- 🎤 **AI Voice Assistant**: Supportive coach helping with applications
+- 🔄 **Real-time Updates**: Form fields populate as you speak
+- 💼 **Career Growth Focus**: Emphasis on professional development paths
+- 🤝 **Encouraging Experience**: Reduces anxiety about internal applications
+- 📊 **MCP Integration**: Seamless tool execution for form updates
 
 ## Architecture
 
 ### Components
 
 1. **Frontend** (HTML/JavaScript)
-   - Job listing page
-   - Voice-enabled application form
+   - Corporate-themed career portal
+   - Three-column application layout
    - Real-time WebSocket updates
    - Elevenlabs widget integration
 
 2. **Backend** (Python/FastAPI)
-   - Job management API
-   - Application submission handling
+   - Internal job positions API
+   - Application session management
    - WebSocket server for real-time updates
-   - Redis integration for data storage
+   - Redis integration for data persistence
 
-3. **MCP Server** (Python)
-   - Custom tools for form field updates
+3. **MCP Server** (Python/FastMCP)
+   - Tools: get_job_details, submit_key_skills, submit_personal_statement
+   - Supportive AI personality configuration
    - SSE transport for real-time communication
-   - Integration with Elevenlabs agent
 
 4. **Data Store** (Redis)
    - Job postings storage
-   - Application data management
-   - Real-time session handling
+   - Application session management
+   - Real-time message broadcasting
 
 ## Prerequisites
 
 - Docker and Docker Compose
-- Elevenlabs account (for voice features)
-- Node.js (optional, for local development)
+- Elevenlabs account with agent configured
 - Python 3.11+ (optional, for local development)
 
 ## Quick Start
@@ -49,22 +56,17 @@ A modern job board application featuring AI-powered voice interviews using Eleve
 ### 1. Clone the Repository
 
 ```bash
+git clone <repository-url>
 cd job-board-voice
 ```
 
 ### 2. Configure Environment
 
-Copy the example environment file and add your credentials:
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` and add your Elevenlabs credentials:
+Create a `.env` file with your Elevenlabs credentials:
 
 ```env
 ELEVENLABS_API_KEY=your_api_key_here
-ELEVENLABS_AGENT_ID=your_agent_id_here
+ELEVENLABS_AGENT_ID=agent_0501k33r4vzkf9mth850sc5tm2n2
 ```
 
 ### 3. Start with Docker Compose
@@ -79,154 +81,133 @@ docker-compose up -d --build
 
 ### 4. Access the Application
 
-- **Job Board**: http://localhost:3001
+- **Career Portal**: http://localhost:3001
 - **Backend API**: http://localhost:8000
-- **MCP Server**: http://localhost:3000/sse
+- **MCP Server**: http://localhost:3000
 
-## Elevenlabs Setup
+## Elevenlabs Configuration
 
-### Creating an Elevenlabs Agent
+The platform uses Elevenlabs Conversational AI with agent ID: `agent_0501k33r4vzkf9mth850sc5tm2n2`
 
-1. Sign up at [elevenlabs.io](https://elevenlabs.io)
-2. Navigate to "Conversational AI" or "Agents"
-3. Create a new agent with these settings:
+### Agent Setup Instructions
 
-#### Agent Configuration
+Configure your Elevenlabs agent with these MCP tools:
 
-**System Prompt**:
-```
-You are a friendly job application assistant conducting interviews for job positions. 
-You have access to MCP tools to update application forms in real-time.
+1. **get_job_details**
+   - Input: job_id (string)
+   - Returns job information to understand the role
 
-When interviewing candidates:
-1. Introduce yourself and the position
-2. Ask for their information progressively:
-   - Full name
-   - Email address
-   - Phone number
-   - Years of experience
-   - Key skills
-   - Why they're interested in the position
-3. Use the update_application_field tool after each response
-4. Be conversational and encouraging
-5. Confirm information before submission
-6. Use submit_application when complete
-```
+2. **submit_key_skills**
+   - Input: session_id (string), skills (string)
+   - Updates the key skills field
 
-**Tools Configuration**:
-Add the MCP server endpoint to your agent:
-- Server URL: `http://your-server:3000`
-- Available tools will be automatically discovered
+3. **submit_personal_statement**
+   - Input: session_id (string), statement (string)
+   - Updates the personal statement field
 
-### Testing Without Elevenlabs
+### Recommended Agent Personality
 
-The application includes a demo mode for testing without voice:
+The AI assistant should be:
+- Warm and encouraging
+- Professional yet approachable
+- Focused on helping employees recognize their value
+- Supportive of career growth within the organization
 
-1. Open the application page
-2. Click "Fill Demo Data" to simulate voice input
-3. Watch the form populate with sample data
+## Application Flow
 
-## Development
+1. **Browse Opportunities**: Employees visit the portal to explore internal positions
+2. **Select Role**: Click "Apply for This Role" on any position
+3. **Manual Information**: Fill in contact details (name, employee ID, email, phone)
+4. **AI Assistance**: The voice assistant helps with:
+   - Key skills and experience relevant to the role
+   - Personal statement about why they're a good fit
+5. **Real-time Updates**: Watch the form populate as you speak
+6. **Submit Application**: Review and submit when ready
 
-### Local Development Setup
-
-#### Backend Development
-
-```bash
-cd backend
-pip install -r ../requirements.txt
-python main.py
-```
-
-#### MCP Server Development
-
-```bash
-cd mcp-server
-pip install mcp fastmcp redis
-python server.py
-```
-
-#### Frontend Development
-
-Simply open `frontend/index.html` in a browser or use a local server:
-
-```bash
-cd frontend
-python -m http.server 3001
-```
-
-### Project Structure
+## Project Structure
 
 ```
 job-board-voice/
-├── backend/              # FastAPI backend
-│   └── main.py          # API endpoints and WebSocket
-├── mcp-server/          # MCP server
-│   └── server.py        # MCP tools for form updates
-├── frontend/            # Web interface
-│   ├── index.html       # Job listings
-│   ├── apply.html       # Application form
-│   ├── css/            # Styles
-│   └── js/             # JavaScript logic
-├── docker/              # Docker configurations
+├── backend/                      # FastAPI backend
+│   └── main.py                  # Internal job positions API
+├── mcp-server/                  # MCP server
+│   └── internal_mobility_server.py  # Supportive AI tools
+├── frontend/                    # Web interface
+│   ├── index.html              # Career portal home
+│   ├── apply.html              # Application form with AI
+│   ├── css/
+│   │   └── corporate-styles.css  # Professional blue theme
+│   └── js/
+│       ├── internal-jobs.js      # Job listings logic
+│       └── internal-application.js  # Application form logic
+├── docker/                      # Docker configurations
 │   ├── Dockerfile.backend
 │   ├── Dockerfile.mcp
 │   └── Dockerfile.frontend
-├── docker-compose.yml   # Service orchestration
-└── .env.example        # Environment template
+├── docker-compose.yml          # Service orchestration
+└── .env                        # Environment variables (gitignored)
 ```
+
+## Available Internal Positions
+
+The platform includes sample positions across departments:
+- Senior Software Engineer (Technology)
+- Product Owner (Digital Innovation)
+- Team Lead - Customer Success (Customer Experience)
+- Lead Data Analyst (Finance)
+- Marketing Specialist (Marketing & Communications)
+
+Each position includes:
+- Department and location
+- Role description
+- Required skills
+- Career growth path
+- Team size information
 
 ## API Endpoints
 
 ### Backend API
 
-- `GET /api/jobs` - List all jobs
-- `GET /api/jobs/{job_id}` - Get job details
+- `GET /api/jobs` - List internal positions
+- `GET /api/jobs/{job_id}` - Get position details
 - `POST /api/sessions/create` - Create application session
-- `GET /api/sessions/{session_id}/status` - Get application status
-- `POST /api/applications/submit` - Submit application
 - `WS /ws/{session_id}` - WebSocket for real-time updates
 
 ### MCP Tools
 
-- `update_application_field` - Update a form field
-- `get_job_details` - Get job information
-- `submit_application` - Submit completed application
-- `get_application_status` - Check application progress
+- `get_job_details(job_id)` - Retrieve position information
+- `submit_key_skills(session_id, skills)` - Update skills field
+- `submit_personal_statement(session_id, statement)` - Update personal statement
 
-## Configuration
+## Development
 
-### Environment Variables
+### Local Backend Development
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `ELEVENLABS_API_KEY` | Your Elevenlabs API key | Required |
-| `ELEVENLABS_AGENT_ID` | Your Elevenlabs agent ID | Required |
-| `REDIS_URL` | Redis connection URL | `redis://redis:6379/0` |
-| `BACKEND_PORT` | Backend server port | `8000` |
-| `MCP_SERVER_PORT` | MCP server port | `3000` |
-| `LOG_LEVEL` | Logging level | `INFO` |
+```bash
+cd backend
+pip install fastapi uvicorn redis websockets
+python main.py
+```
 
-## Troubleshooting
+### Local MCP Server Development
 
-### Common Issues
+```bash
+cd mcp-server
+pip install fastmcp mcp redis pydantic
+python internal_mobility_server.py
+```
 
-1. **Voice assistant not appearing**
-   - Check Elevenlabs credentials in `.env`
-   - Verify agent ID is correct
-   - Check browser console for errors
+### Frontend Development
 
-2. **Form not updating in real-time**
-   - Verify WebSocket connection in browser console
-   - Check MCP server is running: `curl http://localhost:3000/sse`
-   - Ensure Redis is running: `docker-compose ps`
+```bash
+cd frontend
+python -m http.server 3001
+# Visit http://localhost:3001
+```
 
-3. **Cannot submit application**
-   - Ensure all required fields are filled
-   - Check backend logs: `docker-compose logs backend`
-   - Verify Redis connection
+## Monitoring
 
-### Viewing Logs
+### View Service Logs
 
 ```bash
 # All services
@@ -235,57 +216,61 @@ docker-compose logs -f
 # Specific service
 docker-compose logs -f backend
 docker-compose logs -f mcp-server
+docker-compose logs -f frontend
 ```
 
-### Testing MCP Server
+### Check Service Health
 
 ```bash
-# Check if MCP server is running
-curl http://localhost:3000/sse
+# View running services
+docker-compose ps
 
-# Test tool listing
-curl http://localhost:3000/tools
+# Test backend API
+curl http://localhost:8000/api/jobs
+
+# Check MCP server
+curl http://localhost:3000/
 ```
 
-## Demo Workflow
+## Troubleshooting
 
-1. **Browse Jobs**: Open http://localhost:3001 to see available positions
-2. **Select a Job**: Click "Apply with Voice" on any job card
-3. **Start Interview**: Click "Start Conversation" in the voice assistant
-4. **Answer Questions**: Speak naturally to provide your information
-5. **Watch Updates**: See form fields populate in real-time
-6. **Review & Submit**: Check your information and submit when complete
+### Voice Assistant Not Appearing
+- Verify Elevenlabs agent ID in `.env`
+- Check browser console for errors
+- Ensure agent is configured with MCP tools
+
+### Form Not Updating
+- Check WebSocket connection in browser console
+- Verify MCP server is running
+- Review MCP server logs for tool execution
+
+### Application Not Submitting
+- Ensure all required fields are filled
+- Check backend logs for errors
+- Verify Redis connection
 
 ## Security Considerations
 
-- Never commit `.env` files with real credentials
-- Use HTTPS in production
-- Implement rate limiting for API endpoints
-- Add authentication for production deployments
-- Validate and sanitize all user inputs
+- `.env` file is gitignored to protect credentials
+- Use HTTPS in production environments
+- Implement authentication for production
+- Add rate limiting for API endpoints
+- Validate all user inputs
 
-## Contributing
+## Support
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test with Docker Compose
-5. Submit a pull request
+For issues or questions:
+1. Check service logs with `docker-compose logs`
+2. Verify all services are running with `docker-compose ps`
+3. Review browser console for client-side errors
 
 ## License
 
 MIT License - See LICENSE file for details
 
-## Support
-
-For issues or questions:
-1. Check the troubleshooting section
-2. Review logs with `docker-compose logs`
-3. Open an issue on GitHub
-
 ## Acknowledgments
 
-- [Elevenlabs](https://elevenlabs.io) for conversational AI
-- [MCP](https://modelcontextprotocol.io) for tool integration
+- [Elevenlabs](https://elevenlabs.io) for conversational AI technology
+- [MCP](https://modelcontextprotocol.io) for tool integration protocol
 - [FastAPI](https://fastapi.tiangolo.com) for the backend framework
-- [Redis](https://redis.io) for data storage
+- [FastMCP](https://github.com/jlowin/fastmcp) for simplified MCP server creation
