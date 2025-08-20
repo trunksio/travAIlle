@@ -1,0 +1,34 @@
+# MCP Server Dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy MCP server files
+COPY mcp-server/ /app/
+
+# Install Python dependencies
+RUN pip install --no-cache-dir \
+    mcp \
+    fastmcp \
+    redis \
+    pydantic \
+    httpx \
+    aiohttp \
+    aiohttp-sse \
+    uvicorn \
+    python-dotenv
+
+# Expose port for SSE
+EXPOSE 3000
+
+# Set environment variables
+ENV MCP_TRANSPORT=sse
+ENV PYTHONUNBUFFERED=1
+
+# Run the internal mobility server
+CMD ["python", "internal_mobility_server.py"]

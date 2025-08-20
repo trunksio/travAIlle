@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internal Application - Career Growth Portal</title>
+    <link rel="stylesheet" href="css/corporate-styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>Career Growth Portal</h1>
+                    <p class="tagline">Your Next Step Within Our Organization</p>
+                </div>
+                <nav>
+                    <a href="index.html" class="nav-link">← Back to Opportunities</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="position-header">
+                <h2 id="jobTitle">Loading position...</h2>
+                <p class="department" id="jobDepartment"></p>
+            </div>
+
+            <div class="application-container">
+                <!-- Left Column: Contact Information (Manual) -->
+                <div class="contact-section">
+                    <h3>Your Information</h3>
+                    <p class="section-help">Please fill in your current details</p>
+                    
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="employee_id">Employee ID</label>
+                            <input type="text" id="employee_id" name="employee_id" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="current_department">Current Department</label>
+                            <input type="text" id="current_department" name="current_department" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">Phone</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Middle Column: AI-Assisted Fields -->
+                <div class="ai-section">
+                    <h3>Tell Us About Your Fit</h3>
+                    <p class="section-help">Our AI assistant will help you articulate your experience</p>
+                    
+                    <div class="ai-fields">
+                        <div class="form-group">
+                            <label for="key_skills">Key Skills & Experience</label>
+                            <textarea id="key_skills" name="key_skills" rows="6" 
+                                placeholder="Share your skills with our AI assistant..."></textarea>
+                            <span class="field-status" id="key_skills_status"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="personal_statement">Why You're a Good Fit</label>
+                            <textarea id="personal_statement" name="personal_statement" rows="6"
+                                placeholder="Tell our AI assistant why you're interested..."></textarea>
+                            <span class="field-status" id="personal_statement_status"></span>
+                        </div>
+                    </div>
+
+                    <div class="progress-indicator">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <span class="progress-text" id="progressText">Ready to begin</span>
+                    </div>
+                </div>
+
+                <!-- Right Column: AI Assistant -->
+                <div class="assistant-section">
+                    <h3>Your AI Career Coach</h3>
+                    <p class="section-help">Let's explore this opportunity together</p>
+                    
+                    <div class="assistant-container">
+                        <!-- Elevenlabs Conversational AI Widget -->
+                        <elevenlabs-convai agent-id="agent_0501k33r4vzkf9mth850sc5tm2n2"></elevenlabs-convai>
+                        
+                        <div class="assistant-tips">
+                            <h4>How this works:</h4>
+                            <ul>
+                                <li>Click to start a conversation</li>
+                                <li>Share your experience naturally</li>
+                                <li>I'll help you articulate your strengths</li>
+                                <li>Your responses will fill the form automatically</li>
+                            </ul>
+                            
+                            <div class="encouragement">
+                                <p><strong>Remember:</strong> You already belong here. This is about finding your next growth opportunity within our organization.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="submit-section">
+                <button type="button" id="submitBtn" class="submit-btn">
+                    Submit Application
+                </button>
+                <p class="submit-help">Make sure all fields are complete before submitting</p>
+            </div>
+
+            <!-- Success Message (Hidden Initially) -->
+            <div id="successMessage" class="success-message" style="display: none;">
+                <h2>🎉 Application Submitted Successfully!</h2>
+                <p>Thank you for taking this step in your career journey with us.</p>
+                <p>The hiring manager will review your application and reach out soon.</p>
+                <div class="success-actions">
+                    <a href="index.html" class="btn-primary">Explore More Opportunities</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2024 Internal Career Portal | HR Department | Your growth is our priority</p>
+        </div>
+    </footer>
+
+    <!-- Hidden session ID for WebSocket -->
+    <input type="hidden" id="sessionId" value="">
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/internal-application.js"></script>
+    
+    <!-- Elevenlabs Widget Script -->
+    <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+</body>
+</html>

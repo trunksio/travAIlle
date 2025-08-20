@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Board System Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+        .status.success {
+            background: #4caf50;
+            color: white;
+        }
+        .status.error {
+            background: #f44336;
+            color: white;
+        }
+        .status.pending {
+            background: #ff9800;
+            color: white;
+        }
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1976d2;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Job Board System Test</h1>
+    
+    <div class="test-section">
+        <h2>Service Status</h2>
+        <p>Backend API: <span id="backendStatus" class="status pending">Testing...</span></p>
+        <p>MCP Server: <span id="mcpStatus" class="status pending">Testing...</span></p>
+        <p>WebSocket: <span id="wsStatus" class="status pending">Not connected</span></p>
+    </div>
+    
+    <div class="test-section">
+        <h2>Jobs</h2>
+        <button onclick="loadJobs()">Load Jobs</button>
+        <div id="jobsList"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test Application Session</h2>
+        <button onclick="createSession()">Create Session</button>
+        <button onclick="testFieldUpdate()">Test Field Update</button>
+        <button onclick="connectWebSocket()">Connect WebSocket</button>
+        <div id="sessionInfo"></div>
+        <div id="wsMessages"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Links</h2>
+        <p>
+            <a href="http://localhost:3001" target="_blank">Job Board Frontend</a> |
+            <a href="http://localhost:8000/docs" target="_blank">Backend API Docs</a> |
+            <a href="http://localhost:3000/sse" target="_blank">MCP SSE Endpoint</a>
+        </p>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'http://localhost:8000';
+        const MCP_URL = 'http://localhost:3000';
+        let sessionId = null;
+        let websocket = null;
+        
+        // Test backend
+        async function testBackend() {
+            try {
+                const response = await fetch(`${BACKEND_URL}/`);
+                const data = await response.json();
+                document.getElementById('backendStatus').className = 'status success';
+                document.getElementById('backendStatus').textContent = 'Online';
+            } catch (error) {
+                document.getElementById('backendStatus').className = 'status error';
+                document.getElementById('backendStatus').textContent = 'Offline';
+            }
+        }
+        
+        // Test MCP (SSE endpoint doesn't return JSON, so we just check if it connects)
+        async function testMCP() {
+            try {
+                // Try to connect to SSE
+                const eventSource = new EventSource(`${MCP_URL}/sse`);
+                
+                eventSource.onopen = () => {
+                    document.getElementById('mcpStatus').className = 'status success';
+                    document.getElementById('mcpStatus').textContent = 'Online (SSE Connected)';
+                    eventSource.close();
+                };
+                
+                eventSource.onerror = () => {
+                    document.getElementById('mcpStatus').className = 'status error';
+                    document.getElementById('mcpStatus').textContent = 'SSE Connection Failed';
+                    eventSource.close();
+                };
+                
+                // Timeout after 3 seconds
+                setTimeout(() => {
+                    eventSource.close();
+                }, 3000);
+            } catch (error) {
+                document.getElementById('mcpStatus').className = 'status error';
+                document.getElementById('mcpStatus').textContent = 'Error';
+            }
+        }
+        
+        // Load jobs
+        async function loadJobs() {
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/jobs`);
+                const jobs = await response.json();
+                
+                let html = '<h3>Available Jobs:</h3><ul>';
+                jobs.forEach(job => {
+                    html += `<li><strong>${job.title}</strong> at ${job.company} - ${job.location}</li>`;
+                });
+                html += '</ul>';
+                
+                document.getElementById('jobsList').innerHTML = html;
+            } catch (error) {
+                document.getElementById('jobsList').innerHTML = `<p style="color: red;">Error loading jobs: ${error.message}</p>`;
+            }
+        }
+        
+        // Create application session
+        async function createSession() {
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/sessions/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        job_id: 'job_001',
+                        user_agent: navigator.userAgent
+                    })
+                });
+                
+                const data = await response.json();
+                sessionId = data.session_id;
+                
+                document.getElementById('sessionInfo').innerHTML = `
+                    <p><strong>Session Created!</strong></p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('sessionInfo').innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        }
+        
+        // Test field update (simulating what Elevenlabs would do)
+        async function testFieldUpdate() {
+            if (!sessionId) {
+                alert('Please create a session first!');
+                return;
+            }
+            
+            // This would normally be done by the MCP server
+            // For testing, we'll directly update Redis via the backend
+            document.getElementById('sessionInfo').innerHTML += `
+                <p>To test field updates, the Elevenlabs agent would call the MCP tool with:</p>
+                <pre>{
+  "tool": "update_application_field",
+  "args": {
+    "session_id": "${sessionId}",
+    "field_name": "name",
+    "value": "John Doe"
+  }
+}</pre>
+            `;
+        }
+        
+        // Connect WebSocket
+        function connectWebSocket() {
+            if (!sessionId) {
+                alert('Please create a session first!');
+                return;
+            }
+            
+            const wsUrl = `ws://localhost:8000/ws/${sessionId}`;
+            websocket = new WebSocket(wsUrl);
+            
+            websocket.onopen = () => {
+                document.getElementById('wsStatus').className = 'status success';
+                document.getElementById('wsStatus').textContent = 'Connected';
+                document.getElementById('wsMessages').innerHTML = '<p>WebSocket connected! Waiting for updates...</p>';
+            };
+            
+            websocket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                document.getElementById('wsMessages').innerHTML += `
+                    <p><strong>Message received:</strong></p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            };
+            
+            websocket.onerror = (error) => {
+                document.getElementById('wsStatus').className = 'status error';
+                document.getElementById('wsStatus').textContent = 'Error';
+            };
+            
+            websocket.onclose = () => {
+                document.getElementById('wsStatus').className = 'status error';
+                document.getElementById('wsStatus').textContent = 'Disconnected';
+            };
+        }
+        
+        // Run tests on page load
+        window.onload = () => {
+            testBackend();
+            testMCP();
+        };
+    </script>
+</body>
+</html>

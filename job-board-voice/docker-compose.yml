@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  # Redis for job storage and real-time data
+  redis:
+    image: redis:7-alpine
+    container_name: job-board-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - job-board-network
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MCP Server for form field updates
+  mcp-server:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.mcp
+    container_name: job-board-mcp
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - MCP_TRANSPORT=sse
+      - LOG_LEVEL=INFO
+    ports:
+      - "3000:8000"
+    networks:
+      - job-board-network
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # FastAPI Backend
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backend
+    container_name: job-board-backend
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - MCP_SERVER_URL=http://mcp-server:3000
+      - BACKEND_PORT=8000
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
+      - ELEVENLABS_AGENT_ID=${ELEVENLABS_AGENT_ID}
+    ports:
+      - "8000:8000"
+    networks:
+      - job-board-network
+    depends_on:
+      redis:
+        condition: service_healthy
+      mcp-server:
+        condition: service_started
+    restart: unless-stopped
+
+  # Frontend web server
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+    container_name: job-board-frontend
+    environment:
+      # These URLs are for the browser to connect to, not internal Docker networking
+      - BACKEND_URL=http://localhost:8000
+      - MCP_SERVER_URL=http://localhost:3000
+      - ELEVENLABS_AGENT_ID=${ELEVENLABS_AGENT_ID}
+    ports:
+      - "3001:80"
+    networks:
+      - job-board-network
+    depends_on:
+      - backend
+      - mcp-server
+    restart: unless-stopped
+
+networks:
+  job-board-network:
+    driver: bridge
+
+volumes:
+  redis_data:
+    driver: local

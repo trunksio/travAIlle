@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Growth Portal - Internal Opportunities</title>
+    <link rel="stylesheet" href="css/corporate-styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>Career Growth Portal</h1>
+                    <p class="tagline">Discover Your Next Role Within Our Organization</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="welcome-section">
+                <h2>Grow Your Career With Us</h2>
+                <p>Explore internal opportunities and take the next step in your professional journey. 
+                   Our AI-powered application assistant makes it easy to articulate your strengths and apply with confidence.</p>
+            </div>
+
+            <div class="jobs-header">
+                <h2>Current Internal Opportunities</h2>
+                <span class="job-count" id="jobCount">Loading positions...</span>
+            </div>
+
+            <div id="jobsList" class="jobs-grid">
+                <!-- Jobs will be loaded here dynamically -->
+            </div>
+
+            <div id="loadingSpinner" class="loading" style="display: none;">
+                <p>Loading opportunities...</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2024 Internal Career Portal | HR Department | Your growth is our priority</p>
+        </div>
+    </footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/internal-jobs.js"></script>
+</body>
+</html>
