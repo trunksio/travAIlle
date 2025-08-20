@@ -19,6 +19,20 @@ This platform transforms the internal job application process by providing:
 - 🤝 **Encouraging Experience**: Reduces anxiety about internal applications
 - 📊 **MCP Integration**: Seamless tool execution for form updates
 
+## Port Configuration
+
+The application uses ports in the 5010-5013 range to avoid conflicts with common services:
+
+| Service | Internal Port | External Port | Description |
+|---------|--------------|---------------|-------------|
+| Backend API | 8000 | 5010 | FastAPI server |
+| Frontend | 80 | 5011 | Web interface |
+| MCP Server | 8000 | 5012 | MCP tools server |
+| Redis | 6379 | None | Internal only |
+| Reserved | - | 5013 | Future expansion |
+
+Note: Redis is only accessible within the Docker network to avoid conflicts with host Redis installations.
+
 ## Architecture
 
 ### Components
@@ -81,9 +95,9 @@ docker-compose up -d --build
 
 ### 4. Access the Application
 
-- **Career Portal**: http://localhost:3001
-- **Backend API**: http://localhost:8000
-- **MCP Server**: http://localhost:3000
+- **Career Portal**: http://localhost:5011
+- **Backend API**: http://localhost:5010
+- **MCP Server**: http://localhost:5012
 
 ## Elevenlabs Configuration
 
@@ -201,8 +215,8 @@ python internal_mobility_server.py
 
 ```bash
 cd frontend
-python -m http.server 3001
-# Visit http://localhost:3001
+python -m http.server 5011
+# Visit http://localhost:5011
 ```
 
 ## Monitoring
@@ -226,10 +240,10 @@ docker-compose logs -f frontend
 docker-compose ps
 
 # Test backend API
-curl http://localhost:8000/api/jobs
+curl http://localhost:5010/api/jobs
 
 # Check MCP server
-curl http://localhost:3000/
+curl http://localhost:5012/
 ```
 
 ## Troubleshooting
@@ -249,6 +263,44 @@ curl http://localhost:3000/
 - Check backend logs for errors
 - Verify Redis connection
 
+## Production Deployment
+
+### Reverse Proxy Configuration
+
+The application can be deployed behind a reverse proxy (Apache2 or Nginx) for production use. Example configuration files are provided:
+
+#### Apache2
+```bash
+# Enable required modules
+sudo a2enmod proxy proxy_http proxy_wstunnel headers rewrite
+
+# Copy and enable configuration
+sudo cp apache2-proxy.conf /etc/apache2/sites-available/job-portal.conf
+sudo a2ensite job-portal
+sudo systemctl reload apache2
+```
+
+Access the portal at: `http://your-domain.com/job-portal`
+
+#### Nginx
+```bash
+# Copy configuration
+sudo cp nginx-proxy.conf /etc/nginx/sites-available/job-portal
+sudo ln -s /etc/nginx/sites-available/job-portal /etc/nginx/sites-enabled/
+
+# Test and reload
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+Both configurations support:
+- Path-based routing (`/job-portal`)
+- WebSocket connections for real-time updates
+- Server-Sent Events (SSE) for MCP communication
+- Static asset caching
+- Security headers
+- HTTPS/SSL setup (commented examples included)
+
 ## Security Considerations
 
 - `.env` file is gitignored to protect credentials
@@ -256,6 +308,8 @@ curl http://localhost:3000/
 - Implement authentication for production
 - Add rate limiting for API endpoints
 - Validate all user inputs
+- Configure proper CORS headers when using reverse proxy
+- Use firewall rules to restrict direct Docker port access
 
 ## Support
 

@@ -3,8 +3,8 @@
 # Inject environment variables into JavaScript files
 cat > /usr/share/nginx/html/js/config.js <<EOF
 // Auto-generated configuration
-window.BACKEND_URL = "${BACKEND_URL:-http://localhost:8000}";
-window.MCP_SERVER_URL = "${MCP_SERVER_URL:-http://localhost:3000}";
+window.BACKEND_URL = "${BACKEND_URL:-http://localhost:5010}";
+window.MCP_SERVER_URL = "${MCP_SERVER_URL:-http://localhost:5012}";
 window.ELEVENLABS_AGENT_ID = "${ELEVENLABS_AGENT_ID}";
 EOF
 

@@ -1,6 +1,6 @@
 // Internal Application Page with AI Assistant Integration
 
-const BACKEND_URL = window.BACKEND_URL || 'http://localhost:8000';
+const BACKEND_URL = window.BACKEND_URL || 'http://localhost:5010';
 let websocket = null;
 let sessionId = null;
 let jobId = null;

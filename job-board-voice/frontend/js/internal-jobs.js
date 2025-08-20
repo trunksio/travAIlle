@@ -1,7 +1,7 @@
 // Internal Jobs Listing Page
 
 function getBackendUrl() {
-    const url = window.BACKEND_URL || 'http://localhost:8000';
+    const url = window.BACKEND_URL || 'http://localhost:5010';
     console.log('Using backend URL:', url);
     return url;
 }
