@@ -11,17 +11,12 @@ RUN apt-get update && apt-get install -y \
 # Copy MCP server files
 COPY mcp-server/ /app/
 
-# Install Python dependencies
-RUN pip install --no-cache-dir \
-    mcp \
-    fastmcp \
-    redis \
-    pydantic \
-    httpx \
-    aiohttp \
-    aiohttp-sse \
-    uvicorn \
-    python-dotenv
+# Copy requirements file
+COPY mcp-server/requirements.txt /app/requirements.txt
+
+# Install Python dependencies from requirements file
+# Using the same versions as the working example
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Expose port for SSE
 EXPOSE 3000
@@ -30,5 +25,5 @@ EXPOSE 3000
 ENV MCP_TRANSPORT=sse
 ENV PYTHONUNBUFFERED=1
 
-# Run the internal mobility server
-CMD ["python", "internal_mobility_server.py"]
+# Run the clean MCP server (following working example pattern)
+CMD ["python", "job_board_mcp_clean.py"]

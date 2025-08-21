@@ -190,8 +190,12 @@ async def submit_personal_statement(session_id: str, statement_text: str) -> Dic
         logger.error(f"Error updating personal statement: {e}")
         return {"success": False, "error": str(e)}
 
+# Create the ASGI app for SSE
+app = mcp.sse_app()
+
 if __name__ == "__main__":
     import sys
+    import uvicorn
     
     # Check transport mode
     transport = os.getenv("MCP_TRANSPORT", "sse")
@@ -202,6 +206,16 @@ if __name__ == "__main__":
         mcp.run(transport="stdio")
     else:
         # Run in SSE mode for production
-        logger.info(f"Starting Internal Mobility MCP server in SSE mode")
-        # The server will run on port 8000 internally, mapped to 3000 externally via Docker
-        mcp.run(transport="sse")
+        host = "0.0.0.0"
+        port = 8000  # Internal port in Docker container
+        
+        logger.info(f"Starting Internal Mobility MCP server in SSE mode on {host}:{port}")
+        logger.info(f"SSE endpoint will be available at http://{host}:{port}/sse")
+        
+        # Run with uvicorn like the working example
+        uvicorn.run(
+            app,
+            host=host,
+            port=port,
+            log_level="info"
+        )
