@@ -1,25 +1,33 @@
-# Backend API Dockerfile
+# Backend API Dockerfile with uv package manager
 FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies and uv
 RUN apt-get update && apt-get install -y \
     gcc \
-    && rm -rf /var/lib/apt/lists/*
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Copy backend files
+ENV PATH="/root/.local/bin:${PATH}"
+
+# Copy dependency files first for better caching
+COPY pyproject.toml /app/
+
+# Install Python dependencies using uv
+RUN uv pip install --system --no-cache \
+    fastapi==0.104.1 \
+    "uvicorn[standard]==0.24.0" \
+    redis==5.0.1 \
+    httpx==0.25.2 \
+    pydantic==2.5.2 \
+    python-dotenv==1.0.0 \
+    websockets==12.0 \
+    anthropic==0.39.0
+
+# Copy backend application code
 COPY backend/ /app/
-
-# Install Python dependencies
-RUN pip install --no-cache-dir \
-    fastapi \
-    uvicorn[standard] \
-    redis \
-    httpx \
-    pydantic \
-    python-dotenv \
-    websockets
 
 # Expose port
 EXPOSE 8000

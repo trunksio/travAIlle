@@ -23,8 +23,9 @@ async function loadJobs() {
         
         const jobs = await response.json();
         
-        // Update job count
-        jobCount.textContent = `${jobs.length} positions available`;
+        // Update job count with translation
+        const countText = window.i18n ? window.i18n.t('positionsAvailable', jobs.length) : `${jobs.length} positions available`;
+        jobCount.textContent = countText;
         
         // Clear existing jobs
         jobsList.innerHTML = '';
@@ -51,39 +52,62 @@ function createJobCard(job) {
     const card = document.createElement('div');
     card.className = 'job-card';
     
+    // Get current language
+    const lang = window.i18n ? window.i18n.getCurrentLanguage() : 'en';
+    
+    // Get localized content
+    const title = lang === 'de' && job.title_de ? job.title_de : job.title;
+    const department = lang === 'de' && job.department_de ? job.department_de : job.department;
+    const description = lang === 'de' && job.description_de ? job.description_de : job.description;
+    const location = lang === 'de' && job.location_de ? job.location_de : job.location;
+    const teamSize = lang === 'de' && job.team_size_de ? job.team_size_de : job.team_size;
+    const growthPath = lang === 'de' && job.growth_path_de ? job.growth_path_de : job.growth_path;
+    const requirements = lang === 'de' && job.requirements_de ? job.requirements_de : job.requirements;
+    
     // Format the posted date
     const postedDate = new Date(job.posted_date);
     const daysAgo = Math.floor((new Date() - postedDate) / (1000 * 60 * 60 * 24));
-    const dateText = daysAgo === 0 ? 'Posted today' : 
-                     daysAgo === 1 ? 'Posted yesterday' : 
-                     `Posted ${daysAgo} days ago`;
+    
+    // Get translated labels
+    const t = window.i18n ? window.i18n.t.bind(window.i18n) : (key) => key;
+    
+    let dateText;
+    if (lang === 'de') {
+        dateText = daysAgo === 0 ? 'Heute veröffentlicht' : 
+                   daysAgo === 1 ? 'Gestern veröffentlicht' : 
+                   `Vor ${daysAgo} Tagen veröffentlicht`;
+    } else {
+        dateText = daysAgo === 0 ? 'Posted today' : 
+                   daysAgo === 1 ? 'Posted yesterday' : 
+                   `Posted ${daysAgo} days ago`;
+    }
     
     card.innerHTML = `
-        <h3>${job.title}</h3>
-        <div class="job-department">${job.department}</div>
+        <h3>${title}</h3>
+        <div class="job-department">${department}</div>
         
         <div class="job-meta">
-            <span>📍 ${job.location}</span>
-            ${job.team_size ? `<span>👥 ${job.team_size}</span>` : ''}
+            <span>📍 ${location}</span>
+            ${teamSize ? `<span>👥 ${teamSize}</span>` : ''}
         </div>
         
         <div class="job-description">
-            <p>${job.description}</p>
+            <p>${description}</p>
         </div>
         
         <div class="job-requirements">
-            <strong>What we're looking for:</strong>
-            <p>${job.requirements}</p>
+            <strong>${t('whatWereLookingFor')}:</strong>
+            <p>${requirements}</p>
         </div>
         
-        ${job.growth_path ? `
+        ${growthPath ? `
         <div class="growth-path">
-            <strong>Career Growth:</strong> ${job.growth_path}
+            <strong>${t('careerGrowth')}:</strong> ${growthPath}
         </div>
         ` : ''}
         
-        <button class="apply-btn" onclick="applyForJob('${job.id}', '${job.title.replace(/'/g, "\\'")}', '${job.department}')">
-            Apply for This Role →
+        <button class="apply-btn" onclick="applyForJob('${job.id}', '${title.replace(/'/g, "\\'")}', '${department}')">
+            ${t('applyForThisRole')}
         </button>
     `;
     

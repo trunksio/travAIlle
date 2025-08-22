@@ -1,23 +1,25 @@
-# Internal Career Mobility Platform
+# Internal Career Mobility Platform with Claude AI Assistant
 
-An AI-powered internal job mobility platform that helps employees explore growth opportunities within the organization. Features supportive voice assistance through Elevenlabs AI to reduce application anxiety and encourage career development.
+An AI-powered internal job mobility platform that helps employees explore growth opportunities within the organization. Features an interactive chat assistant powered by Claude to help craft compelling job applications in both English and German.
 
 ## Overview
 
 This platform transforms the internal job application process by providing:
 - A professional portal for browsing internal opportunities
-- AI voice assistant that helps employees articulate their skills and experience
-- Real-time form updates as the AI collects information
-- Supportive, encouraging interaction to reduce transition anxiety
+- Claude AI chat assistant that helps employees articulate their skills and experience
+- Real-time form updates based on chat conversation
+- Supportive, encouraging interaction to build confidence
 
 ## Features
 
 - 🏢 **Internal Job Board**: Browse growth opportunities across departments
-- 🎤 **AI Voice Assistant**: Supportive coach helping with applications
-- 🔄 **Real-time Updates**: Form fields populate as you speak
+- 💬 **Claude AI Chat**: Interactive career coach helping with applications
+- 🌍 **Bilingual Support**: Full English and German language support (EN/DE)
+- 🔄 **Real-time Updates**: Form fields populate automatically from chat
+- 📝 **CV Analysis**: Paste your CV and get tailored application help
 - 💼 **Career Growth Focus**: Emphasis on professional development paths
-- 🤝 **Encouraging Experience**: Reduces anxiety about internal applications
-- 📊 **MCP Integration**: Seamless tool execution for form updates
+- 🤝 **Encouraging Experience**: Builds confidence in internal mobility
+- 🇩🇪 **German Jobs**: Includes German-specific positions in Berlin and Munich
 
 ## Port Configuration
 
@@ -25,11 +27,10 @@ The application uses ports in the 5010-5013 range to avoid conflicts with common
 
 | Service | Internal Port | External Port | Description |
 |---------|--------------|---------------|-------------|
-| Backend API | 8000 | 5010 | FastAPI server |
-| Frontend | 80 | 5011 | Web interface |
-| MCP Server | 8000 | 5012 | MCP tools server |
+| Backend API | 8000 | 5010 | FastAPI server with Claude integration |
+| Frontend | 80 | 5011 | Web interface with chat UI |
 | Redis | 6379 | None | Internal only |
-| Reserved | - | 5013 | Future expansion |
+| Reserved | - | 5012-5013 | Future expansion |
 
 Note: Redis is only accessible within the Docker network to avoid conflicts with host Redis installations.
 
@@ -39,9 +40,9 @@ Note: Redis is only accessible within the Docker network to avoid conflicts with
 
 1. **Frontend** (HTML/JavaScript)
    - Corporate-themed career portal
-   - Three-column application layout
+   - Three-column application layout with chat interface
    - Real-time WebSocket updates
-   - Elevenlabs widget integration
+   - Claude-powered chat assistant
 
 2. **Backend** (Python/FastAPI)
    - Internal job positions API

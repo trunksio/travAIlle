@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Translation Test</title>
+</head>
+<body>
+    <h1>Testing German Translations</h1>
+    <div id="test-results"></div>
+    
+    <script>
+        // Test fetching jobs and checking German fields
+        async function testTranslations() {
+            const results = document.getElementById('test-results');
+            
+            try {
+                const response = await fetch('http://localhost:5010/api/jobs');
+                const jobs = await response.json();
+                
+                let html = '<h2>Jobs Data from API:</h2>';
+                
+                jobs.slice(0, 2).forEach(job => {
+                    html += '<div style="border: 1px solid #ccc; margin: 10px; padding: 10px;">';
+                    html += `<h3>Job ID: ${job.id}</h3>`;
+                    html += `<p><strong>English Title:</strong> ${job.title}</p>`;
+                    html += `<p><strong>German Title:</strong> ${job.title_de || 'MISSING'}</p>`;
+                    html += `<p><strong>English Description:</strong> ${job.description.substring(0, 100)}...</p>`;
+                    html += `<p><strong>German Description:</strong> ${job.description_de ? job.description_de.substring(0, 100) + '...' : 'MISSING'}</p>`;
+                    html += `<p><strong>English Requirements:</strong> ${job.requirements.substring(0, 100)}...</p>`;
+                    html += `<p><strong>German Requirements:</strong> ${job.requirements_de ? job.requirements_de.substring(0, 100) + '...' : 'MISSING'}</p>`;
+                    html += '</div>';
+                });
+                
+                results.innerHTML = html;
+                
+                // Log to console for debugging
+                console.log('First job full data:', jobs[0]);
+                
+            } catch (error) {
+                results.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        }
+        
+        testTranslations();
+    </script>
+</body>
+</html>

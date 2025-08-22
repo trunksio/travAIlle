@@ -274,13 +274,4 @@ function showNotification(message, type = 'info') {
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', () => {
     initializeApplication();
-    
-    // Add event listener for Elevenlabs widget when it loads
-    setTimeout(() => {
-        const widget = document.querySelector('elevenlabs-convai');
-        if (widget) {
-            console.log('Elevenlabs widget found, session ID:', sessionId);
-            // The widget should have access to window.APPLICATION_SESSION_ID
-        }
-    }, 2000);
 });

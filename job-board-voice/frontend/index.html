@@ -11,8 +11,13 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <h1>Career Growth Portal</h1>
-                    <p class="tagline">Discover Your Next Role Within Our Organization</p>
+                    <h1 data-i18n="appTitle">Career Growth Portal</h1>
+                    <p class="tagline" data-i18n="tagline">Discover Your Next Role Within Our Organization</p>
+                </div>
+                <div class="header-actions">
+                    <a href="demo.html" class="demo-link">
+                        <span>🎯</span> Demo Mode
+                    </a>
                 </div>
             </div>
         </div>
@@ -21,14 +26,14 @@
     <main>
         <div class="container">
             <div class="welcome-section">
-                <h2>Grow Your Career With Us</h2>
-                <p>Explore internal opportunities and take the next step in your professional journey. 
+                <h2 data-i18n="welcomeTitle">Grow Your Career With Us</h2>
+                <p data-i18n="welcomeText">Explore internal opportunities and take the next step in your professional journey. 
                    Our AI-powered application assistant makes it easy to articulate your strengths and apply with confidence.</p>
             </div>
 
             <div class="jobs-header">
-                <h2>Current Internal Opportunities</h2>
-                <span class="job-count" id="jobCount">Loading positions...</span>
+                <h2 data-i18n="currentOpportunities">Current Internal Opportunities</h2>
+                <span class="job-count" id="jobCount" data-i18n="loadingPositions">Loading positions...</span>
             </div>
 
             <div id="jobsList" class="jobs-grid">
@@ -43,11 +48,13 @@
 
     <footer>
         <div class="container">
-            <p>© 2024 Internal Career Portal | HR Department | Your growth is our priority</p>
+            <p data-i18n="footerText">© 2024 Internal Career Portal | HR Department | Your growth is our priority</p>
         </div>
     </footer>
 
     <script src="js/config.js"></script>
+    <script src="js/translations.js"></script>
+    <script src="js/language-switcher.js"></script>
     <script src="js/internal-jobs.js"></script>
 </body>
 </html>

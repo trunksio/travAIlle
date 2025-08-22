@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Helper - Sample CVs</title>
+    <link rel="stylesheet" href="css/corporate-styles.css">
+    <style>
+        .demo-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border-radius: 12px;
+        }
+        
+        .demo-header h1 {
+            margin: 0 0 1rem 0;
+            font-size: 2rem;
+        }
+        
+        .demo-header p {
+            margin: 0;
+            opacity: 0.95;
+            font-size: 1.1rem;
+        }
+        
+        .cv-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 968px) {
+            .cv-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .cv-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        
+        .cv-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            border-color: #3b82f6;
+        }
+        
+        .cv-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f3f4f6;
+        }
+        
+        .cv-title {
+            font-size: 1.5rem;
+            color: #1f2937;
+            margin: 0;
+        }
+        
+        .cv-lang-badge {
+            padding: 0.5rem 1rem;
+            background: #eff6ff;
+            color: #2563eb;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .cv-lang-badge.german {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        
+        .cv-meta {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+        
+        .cv-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+        
+        .cv-meta-item strong {
+            color: #374151;
+        }
+        
+        .cv-preview {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        
+        .cv-highlights {
+            margin-bottom: 1.5rem;
+        }
+        
+        .cv-highlights h4 {
+            color: #1f2937;
+            margin: 0 0 0.75rem 0;
+            font-size: 1rem;
+        }
+        
+        .highlight-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .highlight-tag {
+            padding: 0.25rem 0.75rem;
+            background: #e0f2fe;
+            color: #0369a1;
+            border-radius: 12px;
+            font-size: 0.85rem;
+        }
+        
+        .clarification-box {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .clarification-box h4 {
+            color: #92400e;
+            margin: 0 0 0.5rem 0;
+            font-size: 0.95rem;
+        }
+        
+        .clarification-list {
+            margin: 0;
+            padding-left: 1.5rem;
+            color: #78350f;
+            font-size: 0.9rem;
+        }
+        
+        .cv-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .copy-btn {
+            flex: 1;
+            padding: 0.75rem 1.5rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .copy-btn:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+        
+        .copy-btn.copied {
+            background: #10b981;
+        }
+        
+        .use-btn {
+            flex: 1;
+            padding: 0.75rem 1.5rem;
+            background: white;
+            color: #3b82f6;
+            border: 2px solid #3b82f6;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .use-btn:hover {
+            background: #eff6ff;
+        }
+        
+        .instructions {
+            background: #f0f9ff;
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .instructions h3 {
+            color: #1e40af;
+            margin: 0 0 1rem 0;
+        }
+        
+        .instructions ol {
+            margin: 0;
+            padding-left: 1.5rem;
+            color: #1e3a8a;
+            line-height: 1.8;
+        }
+        
+        .instructions li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            padding: 0.75rem 1.5rem;
+            background: #f3f4f6;
+            color: #374151;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .back-link:hover {
+            background: #e5e7eb;
+            transform: translateX(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <a href="index.html" class="back-link">← Back to Job Board</a>
+        
+        <div class="demo-header">
+            <h1>Demo Helper - Sample CVs</h1>
+            <p>Quick access to sample CVs for demonstrating the AI-powered application assistant</p>
+        </div>
+        
+        <div class="instructions">
+            <h3>🚀 How to Use for Demo</h3>
+            <ol>
+                <li>Choose a sample CV below that matches your demo scenario</li>
+                <li>Click "Copy CV Text" to copy it to your clipboard</li>
+                <li>Navigate to a job listing and click "Apply Now"</li>
+                <li>Paste the CV into the chat interface</li>
+                <li>Watch as Claude helps refine the application and fills the form fields</li>
+                <li>Notice how Claude asks clarifying questions about ambiguous areas</li>
+            </ol>
+        </div>
+        
+        <div class="cv-grid">
+            <!-- English CV -->
+            <div class="cv-card">
+                <div class="cv-header">
+                    <h3 class="cv-title">Sarah Thompson</h3>
+                    <span class="cv-lang-badge">English CV</span>
+                </div>
+                
+                <div class="cv-meta">
+                    <div class="cv-meta-item">
+                        <strong>Current:</strong> Digital Services
+                    </div>
+                    <div class="cv-meta-item">
+                        <strong>Experience:</strong> 7 years
+                    </div>
+                    <div class="cv-meta-item">
+                        <strong>Focus:</strong> Business Analysis
+                    </div>
+                    <div class="cv-meta-item">
+                        <strong>Target:</strong> Strategic Roles
+                    </div>
+                </div>
+                
+                <div class="cv-highlights">
+                    <h4>Key Strengths</h4>
+                    <div class="highlight-list">
+                        <span class="highlight-tag">Digital Transformation</span>
+                        <span class="highlight-tag">Stakeholder Management</span>
+                        <span class="highlight-tag">Process Improvement</span>
+                        <span class="highlight-tag">Data Analysis</span>
+                        <span class="highlight-tag">Team Leadership</span>
+                    </div>
+                </div>
+                
+                <div class="clarification-box">
+                    <h4>⚠️ Areas AI Will Clarify</h4>
+                    <ul class="clarification-list">
+                        <li>Specific systems implemented (not detailed)</li>
+                        <li>Team sizes in cross-functional work</li>
+                        <li>Project management certification status</li>
+                        <li>Technical skill levels (intermediate?)</li>
+                    </ul>
+                </div>
+                
+                <div class="cv-preview" id="cvPreviewEn">Loading CV...</div>
+                
+                <div class="cv-actions">
+                    <button class="copy-btn" onclick="copyCv('english')">
+                        📋 Copy CV Text
+                    </button>
+                    <button class="use-btn" onclick="useForApplication('job_001')">
+                        ➡️ Use for PM Role
+                    </button>
+                </div>
+            </div>
+            
+            <!-- German CV -->
+            <div class="cv-card">
+                <div class="cv-header">
+                    <h3 class="cv-title">Maximilian Weber</h3>
+                    <span class="cv-lang-badge german">German CV</span>
+                </div>
+                
+                <div class="cv-meta">
+                    <div class="cv-meta-item">
+                        <strong>Aktuell:</strong> Kundenservice
+                    </div>
+                    <div class="cv-meta-item">
+                        <strong>Erfahrung:</strong> 8 Jahre
+                    </div>
+                    <div class="cv-meta-item">
+                        <strong>Fokus:</strong> Teamleitung
+                    </div>
+                    <div class="cv-meta-item">
+                        <strong>Ziel:</strong> HR oder IT
+                    </div>
+                </div>
+                
+                <div class="cv-highlights">
+                    <h4>Kernkompetenzen</h4>
+                    <div class="highlight-list">
+                        <span class="highlight-tag">Teamführung</span>
+                        <span class="highlight-tag">Prozessoptimierung</span>
+                        <span class="highlight-tag">CRM-Systeme</span>
+                        <span class="highlight-tag">Mitarbeiterentwicklung</span>
+                        <span class="highlight-tag">Change Management</span>
+                    </div>
+                </div>
+                
+                <div class="clarification-box">
+                    <h4>⚠️ Klärungsbedarf für KI</h4>
+                    <ul class="clarification-list">
+                        <li>CRM-Systeme nicht spezifiziert</li>
+                        <li>Projektumfang unklar</li>
+                        <li>Six Sigma Status (in Ausbildung)</li>
+                        <li>IT-Zertifizierungen fehlen</li>
+                    </ul>
+                </div>
+                
+                <div class="cv-preview" id="cvPreviewDe">Lebenslauf wird geladen...</div>
+                
+                <div class="cv-actions">
+                    <button class="copy-btn" onclick="copyCv('german')">
+                        📋 Lebenslauf kopieren
+                    </button>
+                    <button class="use-btn" onclick="useForApplication('job_006')">
+                        ➡️ Für HR-Rolle nutzen
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // CV content storage
+        const cvContent = {
+            english: '',
+            german: ''
+        };
+        
+        // Load CV content
+        async function loadCVs() {
+            try {
+                // Load English CV
+                const enResponse = await fetch('/sample-cv-english.txt');
+                if (enResponse.ok) {
+                    cvContent.english = await enResponse.text();
+                    document.getElementById('cvPreviewEn').textContent = cvContent.english.substring(0, 500) + '...';
+                }
+                
+                // Load German CV
+                const deResponse = await fetch('/sample-cv-german.txt');
+                if (deResponse.ok) {
+                    cvContent.german = await deResponse.text();
+                    document.getElementById('cvPreviewDe').textContent = cvContent.german.substring(0, 500) + '...';
+                }
+            } catch (error) {
+                console.error('Error loading CVs:', error);
+                // Fallback content
+                cvContent.english = document.getElementById('cvPreviewEn').textContent;
+                cvContent.german = document.getElementById('cvPreviewDe').textContent;
+            }
+        }
+        
+        // Copy CV to clipboard
+        async function copyCv(language) {
+            const content = cvContent[language];
+            
+            try {
+                // Try modern clipboard API first
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(content);
+                } else {
+                    // Fallback for non-secure contexts
+                    const textArea = document.createElement('textarea');
+                    textArea.value = content;
+                    textArea.style.position = 'fixed';
+                    textArea.style.left = '-999999px';
+                    textArea.style.top = '-999999px';
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    const successful = document.execCommand('copy');
+                    textArea.remove();
+                    if (!successful) {
+                        throw new Error('Copy command failed');
+                    }
+                }
+                
+                // Update button to show success
+                const btn = event.target;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ Copied!';
+                btn.classList.add('copied');
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                // Create a modal with the CV content for manual copying
+                const modal = document.createElement('div');
+                modal.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:20px;border:2px solid #3b82f6;border-radius:8px;max-width:600px;max-height:400px;overflow:auto;z-index:1000;';
+                modal.innerHTML = `
+                    <h3 style="margin-top:0;">Copy CV Content</h3>
+                    <textarea style="width:100%;height:300px;font-family:monospace;" readonly>${content}</textarea>
+                    <div style="margin-top:10px;text-align:right;">
+                        <button onclick="this.parentElement.parentElement.remove();document.getElementById('modalOverlay').remove()" style="padding:8px 16px;background:#3b82f6;color:white;border:none;border-radius:4px;cursor:pointer;">Close</button>
+                    </div>
+                `;
+                const overlay = document.createElement('div');
+                overlay.id = 'modalOverlay';
+                overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:999;';
+                overlay.onclick = () => {
+                    modal.remove();
+                    overlay.remove();
+                };
+                document.body.appendChild(overlay);
+                document.body.appendChild(modal);
+                modal.querySelector('textarea').select();
+            }
+        }
+        
+        // Navigate to application with pre-selected job
+        function useForApplication(jobId) {
+            // Determine job title and department based on jobId
+            let jobTitle, department;
+            if (jobId === 'job_006') {
+                localStorage.setItem('preferredLanguage', 'de');
+                jobTitle = 'Personalentwickler/in';
+                department = 'Personalwesen';
+            } else {
+                localStorage.setItem('preferredLanguage', 'en');
+                jobTitle = 'Senior Project Manager';
+                department = 'Operations';
+            }
+            
+            // Store job info for the application page
+            sessionStorage.setItem('selectedJobId', jobId);
+            sessionStorage.setItem('selectedJobTitle', jobTitle);
+            sessionStorage.setItem('selectedDepartment', department);
+            
+            // Navigate directly to application page
+            window.location.href = 'apply.html';
+        }
+        
+        // Load CVs when page loads
+        document.addEventListener('DOMContentLoaded', loadCVs);
+    </script>
+</body>
+</html>
